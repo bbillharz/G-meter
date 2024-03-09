@@ -22,7 +22,7 @@ void setup(void) {
   }
   Serial.println("MPU6050 Found!");
 
-  mpu.setAccelerometerRange(MPU6050_RANGE_2_G);
+  mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
   Serial.print("Accelerometer range set to: ");
   switch (mpu.getAccelerometerRange()) {
   case MPU6050_RANGE_2_G:
@@ -47,8 +47,16 @@ void loop() {
   mpu.getEvent(&a, &g, &temp);
 
   /* Print out the values */
-  double magnitude = sqrt(sq(a.acceleration.x) + sq(a.acceleration.y) + sq(a.acceleration.z)) -9.81;
+  double magnitude = sqrt(sq(a.acceleration.x) + sq(a.acceleration.y) + sq(a.acceleration.z)) - 9.81;
   Serial.println(magnitude);
+
+  // Serial.print(a.acceleration.x);
+  // Serial.print(" ");
+  // Serial.print(a.acceleration.y);
+  // Serial.print(" ");
+  // Serial.print(a.acceleration.z);
+  // Serial.print(" ");
+  // Serial.println();
 
   delay(20);
 }
