@@ -3,6 +3,7 @@
 #include <Wire.h>
 #include <I2Cdev.h>
 #include <MPU6050.h>
+#include <Streaming.h>
 
 MPU6050 mpu;
 ACCEL_FS accelRange = ACCEL_FS::A2G;
@@ -31,22 +32,34 @@ void setup() {
 
 }
 
+int16_t xMax = 0, yMax = 0, zMax = 0;
+int16_t xMin = 0, yMin = 0, zMin = 0;
+
 void loop() {
+
+  // wait to read
+  while (!Serial.available());
+  Serial.read();
   
-  // individual axis
-  // Serial.print(mpu.getAccelerationX());
-  // Serial.print(" ");
-  // Serial.print(mpu.getAccelerationY());
-  // Serial.print(" ");
-  // Serial.print(mpu.getAccelerationZ());
-  // Serial.print(" ");
-  // Serial.println();
+  // read axis
+  int16_t newX, newY, newZ;
+  mpu.getAcceleration(&newX, &newY, &newZ);
+
+  // find max and min
+  xMax = max(xMax, newX);
+  yMax = max(yMax, newY);
+  zMax = max(zMax, newZ);
+
+  xMin = min(xMin, newX);
+  yMin = min(yMin, newY);
+  zMin = min(zMin, newZ);
+
+  Serial << Gs(xMax) << " | " << Gs(yMax) << " | " << Gs(zMax) << endl;
+  Serial << Gs(xMin) << " | " << Gs(yMin) << " | " << Gs(zMin) << endl;
 
   // magnitude
-  double magnitude = sqrt( sq(mps(mpu.getAccelerationX())) + sq(mps(mpu.getAccelerationY())) + sq(mps(mpu.getAccelerationZ())) );
-  Serial.println(magnitude, 4);
-
-  delay(20);
+  // double magnitude = sqrt( sq(mps(mpu.getAccelerationX())) + sq(mps(mpu.getAccelerationY())) + sq(mps(mpu.getAccelerationZ())) );
+  // Serial.println(magnitude, 4);
 
 }
 
